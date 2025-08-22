@@ -1,0 +1,68 @@
+`timescale 1ns/1ps   // Define simulation time unit and precision
+
+module alu_tb;
+
+    // Testbench signals
+    reg  [3:0] A, B;        // ALU inputs
+    reg  [2:0] opcode;      // ALU operation selector
+    wire [3:0] result;      // ALU result
+    wire carry_out;         // ALU carry/borrow flag
+
+    // Instantiate the ALU (DUT: Device Under Test)
+    alu uut (
+        .A(A),
+        .B(B),
+        .opcode(opcode),
+        .result(result),
+        .carry_out(carry_out)
+    );
+
+    // Stimulus block
+    initial begin
+        // Monitor signals during simulation
+        $monitor("Time=%0t | A=%b | B=%b | Opcode=%b | Result=%b | Carry=%b", 
+                  $time, A, B, opcode, result, carry_out);
+
+        
+        // Test ADD (opcode = 000)
+        
+        A = 4'b0101; B = 4'b0011; opcode = 3'b000; // 5 + 3 = 8
+        #10;  
+
+        A = 4'b1111; B = 4'b0001; opcode = 3'b000; // 15 + 1 = 16 (carry expected)
+        #10;
+
+        // ------------------------
+        // Test SUB (opcode = 001)
+        // ------------------------
+        A = 4'b1000; B = 4'b0011; opcode = 3'b001; // 8 - 3 = 5
+        #10;
+
+        A = 4'b0010; B = 4'b0100; opcode = 3'b001; // 2 - 4 = (borrow expected)
+        #10;
+
+       
+        // Test AND (opcode = 010)
+        
+        A = 4'b1100; B = 4'b1010; opcode = 3'b010; // 1100 & 1010 = 1000
+        #10;
+
+        
+        // Test OR (opcode = 011)
+       
+        A = 4'b1100; B = 4'b1010; opcode = 3'b011; // 1100 | 1010 = 1110
+        #10;
+
+       
+        // Test NOT (opcode = 100)
+        
+        A = 4'b1010; B = 4'b0000; opcode = 3'b100; // ~1010 = 0101
+        #10;
+
+       
+        // End simulation
+        
+        $finish;
+    end
+
+endmodule
