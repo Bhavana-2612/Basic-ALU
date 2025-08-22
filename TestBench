@@ -19,7 +19,12 @@ module alu_tb;
 
     // Stimulus block
     initial begin
-        // Monitor signals during simulation
+
+    // Create VCD dump file for waveform analysis
+        $dumpfile("alu_tb.vcd");   // File name of dump
+        $dumpvars(0, alu_tb);      // Dump all variables in this module (level 0 = entire hierarchy)
+        
+    // Monitor signals during simulation
         $monitor("Time=%0t | A=%b | B=%b | Opcode=%b | Result=%b | Carry=%b", 
                   $time, A, B, opcode, result, carry_out);
 
